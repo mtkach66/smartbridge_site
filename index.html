@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartBridge SIDP — защита Modbus RTU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:        #070B18;
+  --border:    rgba(46,90,170,0.25);
+  --blue:      #2E7DFF;
+  --blue2:     #00C4FF;
+  --teal:      #00D4A0;
+  --text:      #E4ECF7;
+  --muted:     #6B82A8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* сетчатый шум */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(46,125,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46,125,255,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* hero-секция: только текст, без кнопок и дашборда */
+#hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 5vw;
+  overflow: hidden;
+}
+
+/* декоративные свечения */
+.hero-glow {
+  position: absolute; top: -20%; right: -10%;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,125,255,0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-glow2 {
+  position: absolute; bottom: 0; left: 10%;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,212,160,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content {
+  max-width: 900px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(46,125,255,0.1);
+  border: 1px solid rgba(46,125,255,0.3);
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--blue2);
+  text-transform: uppercase;
+  animation: fadeUp .6s ease both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue2);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.hero-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(44px, 6vw, 78px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  animation: fadeUp .6s .1s ease both;
+}
+
+.hero-title em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue2) 50%, var(--teal) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeUp .6s .2s ease both;
+}
+
+/* анимации */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(0,212,160,0.4); }
+  50%      { opacity: .8; transform: scale(1.2); box-shadow: 0 0 0 6px rgba(0,212,160,0); }
+}
+
+/* адаптивность */
+@media (max-width: 700px) {
+  .hero-sub { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">v1.0</div>
+    <h1 class="hero-title">
+      Промышленный<br>шлюз шифрования<br><em>Modbus RTU SIDP</em>
+    </h1>
+    <p class="hero-sub">
+      Промышленное устройство с двойной гальванической изоляцией портов, которое обеспечивает сквозное шифрование трафика RS485. 
+      Шлюз встраивается в разрыв линии между SCADA и полевым оборудованием, преобразуя обычный Modbus RTU в защищённый протокол SIDP (разрабатываемый командой проекта) с шифрованием AES-128-GCM. 
+      При этом SCADA продолжает работать без изменений, а полевой трафик надёжно шифруется.
+    </p>
+  </div>
+</section>
+
+</body>
+</html>
